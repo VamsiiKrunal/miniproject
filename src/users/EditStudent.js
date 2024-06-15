@@ -1,17 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function EditStudent() {
-  const location=useLocation();
-  const student=location.state;
- 
+  const location = useLocation();
+  const student = location.state;
+
+
+  const [formData, setFormData] = useState({
+    rollno: student.rollno,
+    studentName: student.studentName,
+    dob: student.dob,
+    gender: student.gender,
+    phoneNumber: student.phoneNumber,
+    address: student.address,
+    email: student.email,
+    status: student.status
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Form submitted"); // Debugging log
+    try {
+      const res = await fetch(`http://localhost:8080/edit/${student.rollno}`,
+        {
+          method: 'PUT',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        }
+      );
+      
+      console.log("Form data sent", res);
+      
+    } catch (error) {
+      console.error("There was an error!", error);
+    }
+
+
+
+  }
+
   return (
     <div className="container">
       <div className="row">
         <div className="col-md-6 offset-md-3 border rounded p-4 mt-2 shadow">
           <h2 className="text-center m-4">Edit User</h2>
 
-          <form >
+          <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="Name" className="form-label">
                 Name
@@ -20,9 +62,10 @@ export default function EditStudent() {
                 type="text"
                 className="form-control"
                 placeholder="Enter your name"
-                name="name"
-                value={student.studentName}
-               
+                name="studentName"
+                value={formData.studentName}
+                onChange={handleChange}
+
               />
               <label htmlFor="Name" className="form-label">
                 rollno
@@ -32,41 +75,49 @@ export default function EditStudent() {
                 className="form-control"
                 placeholder="Enter your rollno"
                 name="rollno"
-                value={student.rollno}
-               
+                value={formData.rollno}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
-              dob
+                dob
               </label>
               <input
                 type="text"
                 className="form-control"
                 placeholder="Enter your dob"
                 name="dob"
-                value={student.dob}
-               
+                value={formData.dob}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
-              gender
+                gender
               </label>
               <input
                 type="text"
                 className="form-control"
                 placeholder="Enter your gender"
                 name="gender"
-                value={student.gender}
-               
+                value={formData.gender}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
-              phoneNumber
+                phoneNumber
               </label>
               <input
                 type="number"
                 className="form-control"
                 placeholder="Enter your phoneNumber"
                 name="phoneNumber"
-                value={student.phoneNumber}
-               
+                value={formData.phoneNumber}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
                 address
@@ -76,8 +127,10 @@ export default function EditStudent() {
                 className="form-control"
                 placeholder="Enter your address"
                 name="address"
-                value={student.address}
-               
+                value={formData.address}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
                 email
@@ -87,26 +140,32 @@ export default function EditStudent() {
                 className="form-control"
                 placeholder="Enter your email"
                 name="email"
-                value={student.email}
-               
+                value={formData.email}
+                onChange={handleChange}
+
+
               />
               <label htmlFor="Name" className="form-label">
-              status
+                status
               </label>
               <input
                 type="text"
                 className="form-control"
                 placeholder="Enter your status"
                 name="status"
-                value={student.status}
-               
+                value={formData.status}
+                onChange={handleChange}
+
+
               />
 
-              
+
             </div>
-          
-           
-            <button type="submit" className="btn btn-outline-primary">
+
+
+            <button type="submit" className="btn btn-outline-primary"
+
+            >
               Submit
             </button>
             <Link className="btn btn-outline-danger mx-2" to="/">

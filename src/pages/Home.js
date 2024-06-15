@@ -1,16 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Home() {
-  
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = () => {
     fetch('http://localhost:8080/getStudents')
       .then(res => res.json())
       .then(data => setStudents(data));
-  }, []);
-  
+  }
+
+  const handleDel = async (id) => { 
+    await fetch(`http://localhost:8080/delStu/${id}`, { method: 'DELETE' });
+    loadUsers();
+  }
 
   return (
     <div className="container">
@@ -43,18 +50,24 @@ export default function Home() {
                 <td>{student.email}</td>
                 <td>{student.status}</td>
                 <td>
-                  <Link
-                    className="btn btn-primary mx-2"
-                    to='/viewStu' state={student}
+                 
+                <Link
+                  className="btn btn-primary mx-2"
+                  to='/viewStu' state={student}
+                >
+                  View
+                </Link>
+                <Link className="btn btn-outline-primary mx-2"
+                  to='/editStu' state={student}
+                >
+                  Edit
+                </Link>
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={() => handleDel(student.rollno)}
                   >
-                    View
-                  </Link>
-                  <Link className="btn btn-outline-primary mx-2" 
-                    to='/editStu' state={student}
-                  >
-                    Edit
-                  </Link>
-                  <button className="btn btn-danger mx-2">Delete</button>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
